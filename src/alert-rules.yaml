@@ -1,0 +1,21 @@
+groups:
+  - name: MongoDB
+    rules:
+      - alert: MongoDBQuery
+        expr: rate(mongodb_op_counters_total{type="query"}[1m]) > 1
+        for: 10s
+        labels:
+          team: mongodb
+        annotations:
+          summary: Muitas Consultas
+          description: O número de operações do tipo {{$labels.type}} no MongoDB {{$labels.instance}} está alta
+  - name: WebAPI
+    rules:
+      - alert: WebApiTaxaAlta
+        expr: rate(http_requests_received_total[1m]) > 1
+        for: 30s
+        labels:
+          team: webapi
+        annotations:
+          summary: Taxa de transferência alta em {{$labels.instance}}
+          description: "{{$labels.instance}} está com uma taxa de transferência alta (valor: {{$value}})"

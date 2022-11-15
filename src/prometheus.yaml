@@ -1,0 +1,37 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 5s
+  evaluation_interval: 15s
+  external_labels:
+    alerta: prometheus
+
+rule_files:
+  - alert-rules.rules
+
+scrape_configs:
+  - job_name: Prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          grupo: 'Prometheus'
+  
+  - job_name: Api
+    scrape_interval: 5s
+    scrape_timeout: 1s
+    scheme: http
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['web:5000']
+        labels:
+          grupo: 'webapi'
+  - job_name: monbodb-exporter
+    static_configs:
+      - targets: ['mongodb-exporter:9216']
+        labels:
+          grupo: 'MongoDB'
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets: 
+          - 'alertmanager:9093'
